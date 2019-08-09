@@ -1,17 +1,19 @@
 const logger = num => console.log(num);
-const synchronizer = {
-  ready: true,
-};
 
+const monitor = {
+  lock: false,
+};
 function throttle(f, ms) {
   return (num) => {
-    if (synchronizer.ready === true) {
+    if (monitor.lock === false) {
       f(num);
-      synchronizer.ready = false;
-      setTimeout(() => synchronizer.ready = true, ms);
+      monitor.lock = true;
+      setTimeout(() => monitor.lock = false, ms);
     }
   };
 }
 
-const f = throttle(logger, 100);
-f();
+const f = throttle(logger, 100, 1);
+f(1);
+f(2);
+setTimeout(f, 100, 3);
